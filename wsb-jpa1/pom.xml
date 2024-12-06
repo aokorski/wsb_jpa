@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>wsb-jpa1</name>
-	<description>Demo project for JPA</description>
+	<description>Demo project for JPA 76255-76228</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
