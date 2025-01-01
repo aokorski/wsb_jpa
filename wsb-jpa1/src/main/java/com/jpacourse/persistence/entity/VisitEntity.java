@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "VISIT")
@@ -32,6 +33,10 @@ public class VisitEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PATIENT_ID", nullable = false)
 	private PatientEntity patient;
+
+	// Dwustronna
+	@OneToMany(mappedBy = "visit", cascade = CascadeType.REMOVE)
+	private List<MedicalTreatmentEntity> medicalTreatments;
 
 	public Long getId() {
 		return id;

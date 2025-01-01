@@ -1,6 +1,7 @@
 package com.jpacourse.persistence.entity;
 
 import java.time.LocalDate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "PATIENT")
@@ -34,6 +37,13 @@ public class PatientEntity {
 
 	@Column(nullable = false)
 	private LocalDate dateOfBirth;
+
+	// Dwustronna
+	@OneToMany(mappedBy = "patient", cascade = CascadeType.REMOVE)
+	private List<VisitEntity> visits;
+	@CreationTimestamp
+	@Column(nullable = false)
+	private Timestamp createdAt;
 
 	// Dwustronna
 	@OneToOne(cascade = CascadeType.ALL)
@@ -102,5 +112,12 @@ public class PatientEntity {
 	public void setAddress(AddressEntity address) {
 		this.address = address;
 	}
+
+	public Timestamp getCreatedAt() { return createdAt; }
+
+	public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+	public List<VisitEntity> getVisits() { return visits; }
+	public void setVisits(List<VisitEntity> visits) { this.visits = visits; }
 
 }
