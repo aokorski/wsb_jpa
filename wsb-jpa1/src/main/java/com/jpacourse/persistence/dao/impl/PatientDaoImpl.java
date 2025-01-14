@@ -3,31 +3,36 @@ package com.jpacourse.persistence.dao.impl;
 import com.jpacourse.persistence.dao.PatientDao;
 import com.jpacourse.persistence.entity.PatientEntity;
 import org.springframework.stereotype.Repository;
-import com.jpacourse.persistence.entity.DoctorEntity;
-import com.jpacourse.persistence.entity.VisitEntity;
-import com.jpacourse.rest.exception.EntityNotFoundException;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 
 public class PatientDaoImpl extends AbstractDao<PatientEntity, Long> implements PatientDao
 {
+
     @Override
-    public void addVisitToPatient(Long patientId, Long doctorId, LocalDateTime visitDate, String visitDescription) {
-        PatientEntity patient = findOne(patientId);
-        if (patient == null) {
-            throw new EntityNotFoundException(patientId);
-        }
-        DoctorEntity doctor = entityManager.find(DoctorEntity.class, doctorId);
-        if (doctor == null) {
-            throw new EntityNotFoundException(doctorId);
-        }
-        VisitEntity visit = new VisitEntity();
-        visit.setPatient(patient);
-        visit.setDoctor(doctor);
-        visit.setTime(visitDate);
-        visit.setDescription(visitDescription);
-        entityManager.persist(visit);
-        entityManager.merge(patient);
+    public List<PatientEntity> findPatientByLastName(String lastName) {
+        return entityManager.createQuery("SELECT p FROM PatientEntity p WHERE p.lastName = :lastName", PatientEntity.class)
+                .setParameter("lastName", lastName)
+                .getResultList();
+    }
+
+    @Override
+    public List<PatientEntity> findPatientsThatHadMoreVisitsThan(Long numberOfVisits) {
+        String query = "SELECT p " +
+                "FROM PatientEntity p " +
+                "WHERE (SELECT COUNT(v) FROM VisitEntity v WHERE v.patient.id = p.id) > :numberOfVisits";
+
+        return entityManager.createQuery(query, PatientEntity.class)
+                .setParameter("numberOfVisits", numberOfVisits)
+                .getResultList();
+    }
+
+    @Override
+    public List<PatientEntity> findPatientsWithGender(String genderType) {
+        String query = "SELECT p FROM PatientEntity p WHERE p.genderType = :genderType";
+        return entityManager.createQuery(query, PatientEntity.class)
+                .setParameter("genderType", genderType)
+                .getResultList();
     }
 }

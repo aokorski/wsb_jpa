@@ -25,17 +25,18 @@ public class VisitEntity {
 	private LocalDateTime time;
 
 	// Jednostronna rodzic
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "DOCTOR_ID", nullable = false)
 	private DoctorEntity doctor;
 
 	// Jednostronna rodzic
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "PATIENT_ID", nullable = false)
 	private PatientEntity patient;
 
 	// Dwustronna
-	@OneToMany(mappedBy = "visit", cascade = CascadeType.REMOVE)
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "VISIT_ID")
 	private List<MedicalTreatmentEntity> medicalTreatments;
 
 	public Long getId() {

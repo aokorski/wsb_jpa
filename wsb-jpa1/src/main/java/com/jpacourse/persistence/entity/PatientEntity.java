@@ -1,7 +1,6 @@
 package com.jpacourse.persistence.entity;
 
 import java.time.LocalDate;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -27,27 +25,24 @@ public class PatientEntity {
 	@Column(nullable = false)
 	private String lastName;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 15)
 	private String telephoneNumber;
 
+	@Column(nullable = false)
 	private String email;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 5)
 	private String patientNumber;
 
 	@Column(nullable = false)
 	private LocalDate dateOfBirth;
 
-	// Dwustronna
-	@OneToMany(mappedBy = "patient", cascade = CascadeType.REMOVE)
-	private List<VisitEntity> visits;
-	@CreationTimestamp
-	@Column(nullable = false)
-	private Timestamp createdAt;
+	@Column(nullable = false, length = 1)
+	private String genderType;
 
 	// Dwustronna
-	@OneToOne(cascade = CascadeType.ALL)
-	private AddressEntity address;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "patient")
+	private List<VisitEntity> visits;
 
 	public Long getId() {
 		return id;
@@ -105,19 +100,18 @@ public class PatientEntity {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public AddressEntity getAddress() {
-		return address;
+	public String getGenderType() {return genderType; }
+
+	public void setGenderType(String bloodType) {
+		this.genderType = bloodType;
 	}
 
-	public void setAddress(AddressEntity address) {
-		this.address = address;
+	public List<VisitEntity> getVisits() {
+		return visits;
 	}
 
-	public Timestamp getCreatedAt() { return createdAt; }
-
-	public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-
-	public List<VisitEntity> getVisits() { return visits; }
-	public void setVisits(List<VisitEntity> visits) { this.visits = visits; }
+	public void setVisits(List<VisitEntity> visits) {
+		this.visits = visits;
+	}
 
 }

@@ -4,6 +4,9 @@ import com.jpacourse.persistence.dao.DoctorDao;
 import com.jpacourse.persistence.entity.DoctorEntity;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 @Repository
 public class DoctorDaoImpl extends AbstractDao<DoctorEntity, Long> implements DoctorDao
 {

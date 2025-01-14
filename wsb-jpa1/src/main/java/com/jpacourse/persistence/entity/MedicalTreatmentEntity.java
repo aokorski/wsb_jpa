@@ -10,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.*;
 
 @Entity
 @Table(name = "MEDICAL_TREATMENT")
@@ -25,11 +24,6 @@ public class MedicalTreatmentEntity {
 
 	@Enumerated(EnumType.STRING)
 	private TreatmentType type;
-
-	// Jednostronna rodzic
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "VISIT_ID", nullable = false)
-	private VisitEntity visit;
 
 	public Long getId() {
 		return id;
@@ -53,14 +47,6 @@ public class MedicalTreatmentEntity {
 
 	public void setType(TreatmentType type) {
 		this.type = type;
-	}
-
-	public VisitEntity getVisit() {
-		return visit;
-	}
-
-	public void setVisit(VisitEntity visit) {
-		this.visit = visit;
 	}
 
 }

@@ -1,79 +1,63 @@
-package com.jpacourse.service;
+package com.jpacourse.persistence.service;
 
+import com.jpacourse.dto.PatientTO;
 import com.jpacourse.dto.VisitTO;
 import com.jpacourse.persistence.dao.DoctorDao;
-import com.jpacourse.persistence.dao.VisitDao;
-import com.jpacourse.persistence.entity.DoctorEntity;
-import com.jpacourse.persistence.entity.VisitEntity;
-import com.jpacourse.persistence.enums.TreatmentType;
+import com.jpacourse.persistence.dao.PatientDao;
+import com.jpacourse.service.impl.PatientServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import com.jpacourse.dto.PatientTO;
 
-import javax.transaction.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class PatientServiceTest {
 
     @Autowired
-    private PatientService patientService;
+    private PatientServiceImpl patientService;
 
     @Autowired
-    private VisitDao visitDao;
+    private PatientDao patientDao;
 
     @Autowired
     private DoctorDao doctorDao;
 
-    @Transactional
     @Test
-    public void testShouldRemovePatientAndCheckVisitsPlusDoctors(){
+    public void findById_returnsPatientTO() {
         // given
-        // when
-        final PatientTO patient = patientService.findById(1L);
-        assertThat(patient).isNotNull();
-        final List<VisitEntity> visits = visitDao.findByPatientId(1L);
-        assertThat(visits).isNotEmpty();
-        final List<DoctorEntity> doctors = new ArrayList<>();
-        visits.forEach(visit -> doctors.add(visit.getDoctor()));
-        assertThat(doctors).isNotEmpty();
+        Long existingPatientId = 1L;
 
-        patientService.deleteById(patient.getId());
-        // then
-        final PatientTO removedPatient = patientService.findById(1L);
-        assertThat(removedPatient).isNull();
-        final List<VisitEntity> removedVisits = visitDao.findByPatientId(1L);
-        assertThat(removedVisits).isEmpty();
-        for(final DoctorEntity doctor : doctors){
-            final Long doctorId = doctor.getId();
-            assertThat(doctorDao.findOne(doctorId)).isNotNull();
-        }
+        // When
+        PatientTO patientTO = patientService.findById(existingPatientId);
+
+        // Then
+        assertThat(patientTO).isNotNull();
+        assertThat(patientTO.getId()).isEqualTo(existingPatientId);
+        assertThat(patientTO.getFirstName()).isEqualTo("Tony");
+        assertThat(patientTO.getLastName()).isEqualTo("Stark");
+        assertThat(patientTO.getTelephoneNumber()).isEqualTo("5550178");
+        assertThat(patientTO.getEmail()).isEqualTo("tony.stark@marvel.com");
+        assertThat(patientTO.getPatientNumber()).isEqualTo("0148");
+        assertThat(patientTO.getDateOfBirth()).isEqualTo("1970-05-29");
+        assertThat(patientTO.getGenderType()).isEqualTo("M");
     }
 
-    @Transactional
     @Test
-    public void testShouldFindPatientAndCheckStructure(){
+    public void shouldFindAllVisitsByPatientId() {
         // given
-        // when
-        final PatientTO patient = patientService.findById(1L);
-        assertThat(patient).isNotNull();
+        Long existingPatientId = 4L;
+
+        // When
+        List<VisitTO> visits = patientService.findVisitsForPatient(existingPatientId);
+
         // then
-        assertThat(patient.getVisits()).isNotEmpty();
-        assertThat(patient.getVisits().get(0)).isNotNull();
-        assertThat(patient.getVisits().get(0).getDoctorFirstName()).isNotNull();
-        assertThat(patient.getVisits().get(0).getDoctorLastName()).isNotNull();
-        assertThat(patient.getVisits().get(0).getTime()).isNotNull();
-        assertThat(patient.getVisits().get(0).getTreatmentTypes()).isNotEmpty();
-        assertThat(patient.getVisits().get(0).getTreatmentTypes().get(0)).isNotNull();
-        assertThat(patient.getVisits().get(0).getTreatmentTypes().get(0)).isInstanceOf(TreatmentType.class);
+        assertThat(visits).isNotNull();
+        assertThat(visits).isNotEmpty();
     }
 }

@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "DOCTOR")
@@ -39,8 +40,9 @@ public class DoctorEntity {
 	private Specialization specialization;
 
 	// Dwustronna
-	@OneToOne
-	private AddressEntity address;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "DOCTOR_ID")
+	private List<VisitEntity> visits;
 
 	public Long getId() {
 		return id;
@@ -96,14 +98,6 @@ public class DoctorEntity {
 
 	public void setSpecialization(Specialization specialization) {
 		this.specialization = specialization;
-	}
-
-	public AddressEntity getAddress() {
-		return address;
-	}
-
-	public void setAddress(AddressEntity address) {
-		this.address = address;
 	}
 
 }
